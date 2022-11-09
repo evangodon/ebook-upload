@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"errors"
 	"flag"
 	"fmt"
@@ -21,6 +22,11 @@ type application struct {
 	cfg config
 }
 
+var (
+	//go:embed static
+	static embed.FS
+)
+
 func main() {
 	app := application{
 		cfg: config{},
@@ -35,8 +41,8 @@ func main() {
 	}
 	app.cfg.folderPath = absPath
 
-	fs := http.FileServer(http.Dir("./static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	fs := http.FileServer(http.FS(static))
+	http.Handle("/static/", fs)
 
 	http.HandleFunc("/", app.getHomePage)
 
@@ -62,7 +68,7 @@ type Data struct {
 }
 
 func (app application) getHomePage(w http.ResponseWriter, _ *http.Request) {
-	tmpl, err := os.ReadFile("./static/index.html")
+	tmpl, err := static.ReadFile("static/index.html")
 	if err != nil {
 		panic(err)
 	}
