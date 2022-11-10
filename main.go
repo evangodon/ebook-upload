@@ -41,7 +41,7 @@ func main() {
 	http.Handle("/static/", fs)
 
 	folderPattern := app.cfg.folderPath + "/"
-	http.Handle(folderPattern, http.StripPrefix(folderPattern, app.getFile()))
+	http.Handle(folderPattern, app.getFile())
 	http.HandleFunc("/", app.getHomePage())
 
 	fmt.Printf("🚀 Starting server at http://localhost:%d\n", app.cfg.port)

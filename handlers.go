@@ -66,6 +66,6 @@ func (app application) getHomePage() func(w http.ResponseWriter, r *http.Request
 // GET file from folder
 func (app application) getFile() http.Handler {
 	fs := http.FileServer(http.Dir(app.cfg.folderPath))
-
-	return fs
+	folderPattern := app.cfg.folderPath + "/"
+	return http.StripPrefix(folderPattern, fs)
 }
