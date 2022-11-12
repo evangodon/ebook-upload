@@ -35,13 +35,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	app.cfg.folderPath = absPath
+	app.cfg.folderPath = absPath + "/"
 
 	fs := http.FileServer(http.FS(static))
 	http.Handle("/static/", fs)
 
-	folderPattern := app.cfg.folderPath + "/"
-	http.Handle(folderPattern, app.getFile())
+	http.Handle(app.cfg.folderPath, app.getFile())
+	http.HandleFunc("/upload-ebook", app.postEbook())
 	http.HandleFunc("/", app.getHomePage())
 
 	fmt.Printf("🚀 Starting server at http://localhost:%d\n", app.cfg.port)
