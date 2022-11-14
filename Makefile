@@ -1,4 +1,7 @@
 devserver:
 	./scripts/devserver.sh
 
-.PHONY: devserver
+deploy:
+	./scripts/deploy.sh
+
+.PHONY: devserver deploy
