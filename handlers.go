@@ -2,11 +2,11 @@ package main
 
 import (
 	"io"
-	"io/ioutil"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
-	"path"
+	"path/filepath"
 	"sort"
 	"text/template"
 	"time"
@@ -42,33 +42,40 @@ func (app application) getHomePage() func(w http.ResponseWriter, r *http.Request
 			return
 		}
 
-		files, err := ioutil.ReadDir(app.cfg.folderPath)
-		if err != nil {
-			panic(err)
-		}
-
-		data := Data{
-			Files:      []File{},
-			FolderPath: app.cfg.folderPath,
-		}
+		var files []File
 
 		now := time.Now()
-		for _, file := range files {
-			if !file.IsDir() {
-				name := file.Name()
-				path := path.Join(app.cfg.folderPath, name)
-				data.Files = append(data.Files, File{
-					Name:         name,
-					Path:         path,
-					LastModified: file.ModTime(),
-					IsNew:        file.ModTime().After(now.Add(-10 * time.Minute)),
-				})
+		filepath.WalkDir(app.cfg.folderPath, func(s string, d fs.DirEntry, e error) error {
+			if e != nil {
+				return e
 			}
-		}
+			info, e := d.Info()
+			if e != nil {
+				return e
+			}
 
-		sort.SliceStable(data.Files, func(i, j int) bool {
-			return data.Files[i].LastModified.After(data.Files[j].LastModified)
+			if d.IsDir() {
+				return nil
+			}
+
+			files = append(files, File{
+				Name:         d.Name(),
+				Path:         s,
+				LastModified: info.ModTime(),
+				IsNew:        info.ModTime().After(now.Add(-10 * time.Minute)),
+			})
+
+			return nil
 		})
+
+		sort.SliceStable(files, func(i, j int) bool {
+			return files[i].LastModified.After(files[j].LastModified)
+		})
+
+		data := Data{
+			Files:      files,
+			FolderPath: app.cfg.folderPath,
+		}
 
 		err = t.Execute(w, data)
 		if err != nil {
