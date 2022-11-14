@@ -6,6 +6,7 @@ form.addEventListener("submit", handleSubmit);
 
 function handleFile() {
   const file = this.files[0];
+  console.log(file);
 
   uploadContainer.innerHTML = `
         <span class="file-name">
@@ -30,3 +31,30 @@ function handleSubmit(e) {
     })
     .catch((err) => console.error(err));
 }
+
+const dropzone = document.getElementById("drop-zone");
+const isHoveringClass = "dropzone-active";
+dropzone.addEventListener("dragover", (event) => {
+  event.preventDefault();
+  if (!dropzone.classList.contains(isHoveringClass)) {
+    dropzone.classList.add(isHoveringClass);
+  }
+});
+dropzone.addEventListener("dragleave", (_) => {
+  dropzone.classList.remove(isHoveringClass);
+});
+
+const changeEvt = new Event("change");
+dropzone.addEventListener("drop", (event) => {
+  event.preventDefault();
+  [...event.dataTransfer.items].forEach((item) => {
+    if (item.kind === "file") {
+      const file = item.getAsFile();
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      fileInput.files = dataTransfer.files;
+
+      fileInput.dispatchEvent(changeEvt);
+    }
+  });
+});

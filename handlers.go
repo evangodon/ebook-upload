@@ -91,9 +91,7 @@ func (app application) getFile() http.Handler {
 }
 
 func (app application) postEbook() func(w http.ResponseWriter, r *http.Request) {
-
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		err := r.ParseMultipartForm(32 << 20)
 		if err != nil {
 			log.Fatal("error parsing form " + err.Error())

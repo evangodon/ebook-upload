@@ -3,7 +3,6 @@ Go server for uploading ebooks to a folder and listing files so I can download t
 #TODO
 
 - [ ] Add input for search
-- [ ] Look into drag and drop
 
 # DONE
 
@@ -14,3 +13,4 @@ Go server for uploading ebooks to a folder and listing files so I can download t
 - [x] Add "new" tag next to file name
 - [x] deploy to raspberry pi
 - [x] Search directories one level https://stackoverflow.com/questions/55300117/how-do-i-find-all-files-that-have-a-certain-extension-in-go-regardless-of-depth
+- [x] Look into drag and drop
