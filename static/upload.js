@@ -1,12 +1,11 @@
 const uploadContainer = document.querySelector(".file-upload-container");
 const fileInput = document.getElementById("file-upload-input");
-let form = document.getElementById("upload-form");
+const form = document.getElementById("upload-form");
 fileInput.addEventListener("change", handleFile);
 form.addEventListener("submit", handleSubmit);
 
 function handleFile() {
   const file = this.files[0];
-  console.log(file);
 
   uploadContainer.innerHTML = `
         <span class="file-name">
@@ -25,11 +24,7 @@ function handleSubmit(e) {
     body: formData,
     method: "POST",
   });
-  res
-    .then(() => {
-      location.reload();
-    })
-    .catch((err) => console.error(err));
+  res.catch((err) => console.error(err));
 }
 
 const dropzone = document.getElementById("drop-zone");

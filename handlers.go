@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"io/fs"
 	"log"
@@ -10,6 +11,9 @@ import (
 	"sort"
 	"text/template"
 	"time"
+
+	"github.com/fsnotify/fsnotify"
+	"golang.org/x/net/websocket"
 )
 
 type File struct {
@@ -25,8 +29,8 @@ type Data struct {
 }
 
 // GET homepage
-func (app application) getHomePage() func(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := static.ReadFile("static/index.html")
+func (app application) getHomePage() http.HandlerFunc {
+	tmpl, err := staticEmbed.ReadFile("static/index.html")
 	if err != nil {
 		panic(err)
 	}
@@ -90,7 +94,7 @@ func (app application) getFile() http.Handler {
 	return http.StripPrefix(app.cfg.folderPath, fs)
 }
 
-func (app application) postEbook() func(w http.ResponseWriter, r *http.Request) {
+func (app application) postEbook() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(32 << 20)
 		if err != nil {
@@ -123,4 +127,43 @@ func (app application) postEbook() func(w http.ResponseWriter, r *http.Request) 
 
 		io.WriteString(w, "upload successful")
 	}
+}
+
+func (app application) fileWatcher() http.Handler {
+	events := make(chan fsnotify.Event)
+
+	go func() {
+		for {
+			select {
+			case event, ok := <-app.filewatcher.Events:
+				if !ok {
+					return
+				}
+
+				events <- event
+
+			case err, ok := <-app.filewatcher.Errors:
+				if !ok {
+					return
+				}
+				log.Println("error:", err)
+			}
+		}
+	}()
+	err := app.filewatcher.Add(app.cfg.folderPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return websocket.Handler(func(ws *websocket.Conn) {
+		for {
+			event := <-events
+			println(event.String())
+
+			if err = websocket.Message.Send(ws, "reload"); err != nil {
+				fmt.Println("Can't send", err)
+			}
+
+		}
+	})
 }
