@@ -124,7 +124,6 @@ func (app application) postEbook() http.HandlerFunc {
 		}
 
 		log.Print("Wrote new file to " + filepath)
-
 		io.WriteString(w, "upload successful")
 	}
 }
@@ -161,9 +160,8 @@ func (app application) fileWatcher() http.Handler {
 			println(event.String())
 
 			if err = websocket.Message.Send(ws, "reload"); err != nil {
-				fmt.Println("Can't send", err)
+				fmt.Println("Error sending websocket message: ", err)
 			}
-
 		}
 	})
 }

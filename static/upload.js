@@ -24,7 +24,7 @@ function handleSubmit(e) {
     body: formData,
     method: "POST",
   });
-  res.catch((err) => console.error(err));
+  res.then(() => location.reload()).catch((err) => console.error(err));
 }
 
 const dropzone = document.getElementById("drop-zone");

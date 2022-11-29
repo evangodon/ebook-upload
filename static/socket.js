@@ -1,9 +1,7 @@
 const wsURI = `ws://${window.location.host}/filewatcher`;
 
-let reloading = false;
+let refreshing = false;
 async function refreshFileList() {
-  reloading = true;
-
   const res = await fetch("/");
   const html = await res.text();
   const parser = new DOMParser();
@@ -22,9 +20,11 @@ window.onload = function() {
     console.log(`connected to ${wsURI}`);
   };
 
-  sock.onmessage = (evt) => {
-    if (!reloading && evt.data == "reload") {
-      refreshFileList();
+  sock.onmessage = async (evt) => {
+    if (!refreshing && evt.data == "reload") {
+      refreshing = true;
+      await refreshFileList();
+      refreshing = false;
     }
   };
 
