@@ -3,6 +3,7 @@ import { Head } from "$fresh/runtime.ts";
 import { config } from "@/utils/config.ts";
 import type { EbookFile } from "@/utils/types.ts";
 import { Ebook } from "@/components/Ebook.tsx";
+import FileUpload from "@/islands/FileUpload.tsx";
 
 interface Data {
   ebooks: EbookFile[];
@@ -24,6 +25,9 @@ export const handler: Handlers<Data> = {
 
     return ctx.render({ ebooks });
   },
+  POST(_, _ctx) {
+    return new Response("success");
+  },
 };
 
 export default function Home({ data }: PageProps<Data>) {
@@ -36,6 +40,8 @@ export default function Home({ data }: PageProps<Data>) {
       </Head>
       <div class="container">
         <h1 class="h1">Ebook File Server</h1>
+
+        <FileUpload />
 
         <h3 class="list-header">
           Files in <code>{config.sourceFolder}</code>

@@ -5,16 +5,14 @@ export const handler: Handlers = {
   async GET(req: Request, _ctx: HandlerContext) {
     const url = new URL(req.url);
     const decoded = decodeURIComponent(url.pathname);
-
     const filename = decoded.substring(decoded.lastIndexOf("/") + 1);
-
     const fullpath = config.sourceFolder + filename;
 
-    let file;
-
+    let file: Deno.FsFile;
     try {
       file = await Deno.open(fullpath, { read: true });
     } catch {
+      console.error("Error: failed to open file", fullpath);
       return new Response("404 Not Found", { status: 404 });
     }
 
