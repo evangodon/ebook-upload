@@ -24,8 +24,21 @@ export default function FileUpload({}: Props) {
     }
   }
 
-  function handleAddFile() {
-    // TODO: fetch request to POST file
+  async function handleAddFile() {
+    if (file) {
+      const formData = new FormData();
+      const ebookBlob = new Blob([file!]);
+      formData.set("ebook", ebookBlob, file.name);
+
+      const res = await fetch("/", {
+        method: "POST",
+        body: formData,
+      });
+      if (res.ok) {
+        const msg = await res.json();
+        console.log({ msg });
+      }
+    }
   }
 
   return (
