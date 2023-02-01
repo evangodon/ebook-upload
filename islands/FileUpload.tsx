@@ -35,15 +35,17 @@ export default function FileUpload({}: Props) {
         body: formData,
       });
       if (res.ok) {
-        const msg = await res.json();
-        console.log({ msg });
+        setFile(null);
+        setDropzoneActive(false);
       }
+      const msg = await res.json();
+      console.error(msg);
     }
   }
 
   return (
     <div
-      class={dropzoneActive ? "dropzone-active" : "dropzone"}
+      class={`dropzone ${dropzoneActive ? "dropzone-active" : ""}`}
       onDragEnter={toggleDropzoneActive}
       onDragLeave={toggleDropzoneActive}
       onDragOver={preventDefault}
@@ -52,9 +54,11 @@ export default function FileUpload({}: Props) {
       <form class="file-upload-container" onSubmit={preventDefault}>
         {file
           ? (
-            <div>
-              <span>{file.name}</span>
-              <button onClick={handleAddFile}>Add</button>
+            <div class="file-added">
+              <span class="ebook-name">{file.name}</span>
+              <button class="submit-button" onClick={handleAddFile}>
+                Add
+              </button>
             </div>
           )
           : (

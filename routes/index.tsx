@@ -30,11 +30,11 @@ export const handler: Handlers<Data> = {
       const formData = await req.formData();
       const ebook = formData.get("ebook");
       if (!(ebook instanceof File)) {
-        throw new Error("ebook file not sent")
+        throw new Error("ebook file not sent");
       }
 
-      const path = config.sourceFolder + ebook.name
-      Deno.writeFile(path, ebook.stream())
+      const path = config.sourceFolder + ebook.name;
+      Deno.writeFile(path, ebook.stream());
 
       const msg = JSON.stringify({ msg: `Added ${ebook.name} to folder` });
       return new Response(msg);

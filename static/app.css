@@ -18,8 +18,10 @@
 
 .dropzone {
   border: 3px solid transparent;
-  margin-bottom: 2rem; background-color: var(--light-grey);
+  margin-bottom: 2rem;
+  background-color: var(--light-grey);
   border-radius: var(--radius);
+  position: relative;
 }
 
 .dropzone-active {
@@ -97,4 +99,24 @@
   color: var(--blue);
   padding: 0.2rem 0.6rem;
   font-size: 0.8rem;
+}
+
+/* Ebook added  */
+
+.file-added {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.submit-button {
+  background-color: var(--blue);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 0.4rem 0.8rem;
+  border: transparent;
+  position: absolute;
+  --spacing: 1rem;
+  right: var(--spacing);
+  bottom: var(--spacing);
 }
