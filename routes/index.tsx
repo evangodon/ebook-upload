@@ -4,10 +4,13 @@ import { config } from "@/utils/config.ts";
 import type { EbookFile } from "@/utils/types.ts";
 import { Ebook } from "@/components/Ebook.tsx";
 import FileUpload from "@/islands/FileUpload.tsx";
+import { extname } from "path";
 
 interface Data {
   ebooks: EbookFile[];
 }
+
+const blacklistedExtensions = [".sh"];
 
 export const handler: Handlers<Data> = {
   async GET(_, ctx) {
@@ -19,6 +22,11 @@ export const handler: Handlers<Data> = {
       const file = await Deno.stat(config.sourceFolder + dirEntry.name);
       const modtime = file.mtime;
       const name = dirEntry.name;
+      const ext = extname(name);
+
+      if (blacklistedExtensions.includes(ext)) {
+        continue;
+      }
 
       ebooks.push({ name, modtime });
     }

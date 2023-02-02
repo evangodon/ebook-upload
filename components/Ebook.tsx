@@ -5,7 +5,6 @@ type Props = {
 };
 
 // TODO: clean up file name
-// TODO: add download function instead of <a download/>
 
 export const Ebook = ({ ebook }: Props) => {
   const isNew = ebook.modtime

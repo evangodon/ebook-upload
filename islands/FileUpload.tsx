@@ -37,6 +37,7 @@ export default function FileUpload({}: Props) {
       if (res.ok) {
         setFile(null);
         setDropzoneActive(false);
+        location.reload();
       }
       const msg = await res.json();
       console.error(msg);

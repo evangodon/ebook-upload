@@ -7,6 +7,7 @@
     "@preact/signals": "https://esm.sh/*@preact/signals@1.0.3",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.0.1",
     "load-envs": "https://deno.land/std@0.174.0/dotenv/load.ts",
+    "path": "https://deno.land/std@0.175.0/path/mod.ts",
     "@/": "./"
   }
 }
